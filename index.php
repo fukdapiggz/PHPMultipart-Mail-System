@@ -70,9 +70,9 @@ fbOption.onchange = fbOptionAction;
 <div class="container">
 <table align="center">
 <tr><td><label for="subject"><b>Email Subject</b>:</label><br><input type="text" size="75%" id="subject" name="subject" required></td></tr>
-<tr><td><label for="businessName"><b>Sender Name</b>: *(Change in config with other fields)</label><br><input type="text" size="75%" id="businessNameDisable" name="businessNameDisable" value="<?php echo $businessName; ?>">
+<tr><td><label for="businessName"><b>Sender Name</b>: *(Change in config with other fields)</label><br><input type="text" size="75%" id="businessNameDisable" name="businessNameDisable" value="<?php echo $businessName; ?>" disabled>
 <input type="hidden" id="businessName" name="businessName" value="<?php echo $businessName; ?>"></td></tr>
-<tr><td><label for="subject"><b>Sender Email</b>:</label><br><input type="text" size="75%" id="senderEmailDisable" name="senderEmailDisable" value="<?php echo $senderEmail; ?>" >
+<tr><td><label for="subject"><b>Sender Email</b>:</label><br><input type="text" size="75%" id="senderEmailDisable" name="senderEmailDisable" value="<?php echo $senderEmail; ?>" disabled>
 <input type="hidden" id="senderEmail" name="senderEmail" value="<?php echo $senderEmail; ?>"></td></tr>
 
 <tr><td><label for="receiverName"><b>Recipient Name</b>:</label><br><input type="text" size="75%" id="receiverName" name="receiverName" <?php if (!($receiverName ?? '') == '') {echo 'value="' . $receiverName . '"';} ?> required></td></tr>
