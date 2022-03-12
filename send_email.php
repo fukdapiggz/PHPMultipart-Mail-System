@@ -1,5 +1,6 @@
 <?php
-//Get info from form
+////Get info from form////
+//Get all posted data from form.
 $senderName = $_GET["businessName"];
 $senderEmail = $_GET["senderEmail"];
 $receiverName = $_GET["receiverName"];
@@ -9,41 +10,24 @@ $titleHeader = $_GET["title"];
 $body = $_GET["body"];
 
 
+////Custom Touches////
 //Subject Name
-if ($subjectHeader == $titleHeader) {
-    $chosenSubject = $titleHeader . ' | ' . $senderName;
-} else {$chosenSubject = $subjectHeader . ' | ' . $senderName;}
-
-
-//Make textonly version
-$textOnlyInput = strip_tags($body);
-$textOnly = strip_tags($body, "<strong><em>");
-
-
-//Social Footer
-if (($_GET["ig"] ?? '') == '1') {
-    $igLink = 'https://' . $_GET["igLink"];
-    $igDesktop = '<td><a href=' . $igLink . ' target="_blank"><img src="https://raw.githubusercontent.com/fukdapiggz/PHPMultipartMailSystem/main/ig.png" class="social"  /></a></td><td>&nbsp;</td>';
-} else {$igDesktop = ''; $igLink = '0';}
-
-if (($_GET["fb"] ?? '') == '1') {
-    $fbLink = 'https://' . $_GET["fbLink"];
-    $fbDesktop = '<td><a href=' . $fbLink . ' target="_blank"><img src="https://raw.githubusercontent.com/fukdapiggz/PHPMultipartMailSystem/main/fb.png" class="social"  /></a></td>';
-} else {$fbDesktop = ''; $fbLink = '0';}
-
+if ($subjectHeader == $titleHeader) {$chosenSubject = $titleHeader . ' | ' . $senderName;}
+  else {$chosenSubject = $subjectHeader . ' | ' . $senderName;}
+//Social Footer (controls $igLink, $igDesktop, $igMobile, $fbLink, $fbDesktop, $fbMobile)
+if (($_GET["ig"] ?? '')=='1'){$igLink='https://' . $_GET["igLink"]; $igDesktop='<td><a href=' . $igLink . ' target="_blank"><img src="https://raw.githubusercontent.com/fukdapiggz/PHPMultipartMailSystem/main/ig.png" class="social"/></a></td><td>&nbsp;</td>';}else{$igDesktop=''; $igLink='0';}if (($_GET["fb"] ?? '')=='1'){$fbLink='https://' . $_GET["fbLink"]; $fbDesktop='<td><a href=' . $fbLink . ' target="_blank"><img src="https://raw.githubusercontent.com/fukdapiggz/PHPMultipartMailSystem/main/fb.png" class="social"/></a></td>';}else{$fbDesktop=''; $fbLink='0';}
 if (!($igLink ?? '') == '0') {$igMobile = '<a href=' . $igLink . ' class="socialLink"target="_blank">Instagram</a> &nbsp; ';} else {$igMobile = '';} if (!($fbLink ?? '') == '0') {$fbMobile = '<a href=' . $fbLink . ' class="socialLink"target="_blank">Facebook</a>';} else {$fbMobile = '';}
 
 
-//Required for multipart email
-$boundaryUID=md5(uniqid(rand()));
-$chosenBoundary = "----=_NextPart".$senderName."_" . $boundaryUID;
+////Multipart Email System////
+//BoundaryUID, required for multipart emails
+$boundaryUID=md5(uniqid(rand())); $chosenBoundary = "----=_NextPart".$senderName."_" . $boundaryUID;
 $eol = "\n";
-
-
-//Fields
+//Make and encrypt a textonly version, of string returned within $body
+$textOnlyInput = strip_tags($body); $textOnly = strip_tags($body, "<strong><em>");
+//Server fields, creates email
 $to = $receiverEmail;
 $subject = $chosenSubject;
-
 $header = "Delivered-To:".$receiverName."<".$receiverEmail.">".$eol;
 $header = "To:".$receiverName."<".$receiverEmail.">".$eol;
 $header .= "From:".$senderName."<".$senderEmail.">".$eol;
@@ -55,15 +39,15 @@ $header .= "X-Business-Group:".$senderName.$eol;
 $header .= "X-Priority: 1".$eol;
 $header .= "MIME-Version: 1.0".$eol;
 $header .= 'Content-type: multipart/alternative; boundary="'.$chosenBoundary.'"'.$eol;
-
-
 $message = "This is multipart message using MIME".$eol;
 $message .= "--".$chosenBoundary.$eol."Content-Type: text/plain; charset=UTF-8".$eol;
 $message .= "Content-Transfer-Encoding: 7bit".$eol;
-$message .= $textOnly.$eol;
-$message .= "--".$chosenBoundary.$eol."Content-type: text/html; charset=iso-8859-1".$eol;
-$message .= "Content-Transfer-Encoding: 7bit".$eol;
-$message .= '
+$message .= $eol.$textOnly.$eol;
+
+
+////Handling Raw HTML////
+//Enter raw, html, js, css
+$htmlRaw = '
 <html>
   <head>
     <title>'.$chosenSubject.'</title>
@@ -92,11 +76,7 @@ $message .= '
         <tr valign="top">
           <td align="center">
             <div class="socialBtn">
-              <div class="hideDesktopIcons">
-                <table align="center">
-                  <tr>'.$igDesktop.' '.$fbDesktop.'</tr>
-                </table>
-              </div>
+              <div class="hideDesktopIcons"><table align="center"><tr>'.$igDesktop.' '.$fbDesktop.'</tr></table></div>
               <div class="hideMobileIcons">'.$igMobile.' '.$fbMobile.'</div>
             </div>
           </td>
@@ -104,15 +84,17 @@ $message .= '
       </table>
     </div>
   </body>
-</html>'.$eol;
-$message .= "--".$chosenBoundary."--";
+</html>';
 
-$retval = mail ($to,$subject,$message,$header);
-        
-if( $retval == true ) {
-echo 'Message sent successfully...';
-}else {
-echo 'Message could not be sent...';
-}
-echo '<br><a href="index.php">Go back to form</a>';
+
+////Finalize Process
+//Encrypts and Last BoundaryUID
+$htmlEncrypt = base64_encode($htmlRaw);
+$message .= "--".$chosenBoundary.$eol."Content-type: text/html; charset=utf-8".$eol;
+$message .= "Content-Transfer-Encoding: base64".$eol;
+$message .= $htmlEncrypt.$eol.$eol.$eol;
+$message .= "--".$chosenBoundary."--";
+//Send and response
+$retval = mail ($to,$subject,$message,$header);        
+if( $retval==true ){echo 'Message sent successfully...';}else{echo 'Message could not be sent...';}echo '<br><a href="index.php">Go back to form</a>';
 ?>
