@@ -1,9 +1,11 @@
 <?php
+//Initialize
+if (($_GET["success"] ?? '')=='1'){echo 'Message sent success!<br><a href="index.php?success=0">Reset Form</a>';exit;}
 //Config
-$businessName = 'Business/YourName';
-$senderEmail = 'YourEmail@domain.com';
+$businessName = 'Instant Contact';
+$senderEmail = 'InstactContact@server.nz';
 $receiverName = $businessName . ' Recipient';
-$receiverEmail = 'RecipientEmail@domain.com'; //fill this here by choice
+$receiverEmail = 'recipient@domain.com';
 //Links
 $InstagramLink = 'instagram.com'; //without www.
 $FacebookLink = 'facebook.com'; //without www.
@@ -68,9 +70,9 @@ fbOption.onchange = fbOptionAction;
 <div class="container">
 <table align="center">
 <tr><td><label for="subject"><b>Email Subject</b>:</label><br><input type="text" size="75%" id="subject" name="subject" required></td></tr>
-<tr><td><label for="businessName"><b>Sender Name</b>: *(Change in config with other fields)</label><br><input type="text" size="75%" id="businessNameDisable" name="businessNameDisable" value="<?php echo $businessName; ?>" disabled>
+<tr><td><label for="businessName"><b>Sender Name</b>: *(Change in config with other fields)</label><br><input type="text" size="75%" id="businessNameDisable" name="businessNameDisable" value="<?php echo $businessName; ?>">
 <input type="hidden" id="businessName" name="businessName" value="<?php echo $businessName; ?>"></td></tr>
-<tr><td><label for="subject"><b>Sender Email</b>:</label><br><input type="text" size="75%" id="senderEmailDisable" name="senderEmailDisable" value="<?php echo $senderEmail; ?>" disabled>
+<tr><td><label for="subject"><b>Sender Email</b>:</label><br><input type="text" size="75%" id="senderEmailDisable" name="senderEmailDisable" value="<?php echo $senderEmail; ?>" >
 <input type="hidden" id="senderEmail" name="senderEmail" value="<?php echo $senderEmail; ?>"></td></tr>
 
 <tr><td><label for="receiverName"><b>Recipient Name</b>:</label><br><input type="text" size="75%" id="receiverName" name="receiverName" <?php if (!($receiverName ?? '') == '') {echo 'value="' . $receiverName . '"';} ?> required></td></tr>
@@ -91,8 +93,8 @@ fbOption.onchange = fbOptionAction;
 <tr><center>
 <table border="1" style="float:center;min-width:535px!important;">
 	<tr>
-		<td border="1px"><center><input type="checkbox" id="igOption" <?php if (!($InstagramLink ?? '') == '') {echo "checked";} ?> >Instagram:</center></td>
-		<td border="1px"><center><input type="checkbox" id="fbOption" <?php if (!($FacebookLink ?? '') == '') {echo "checked";} ?> >Facebook:</center></td>
+		<td border="1px"><center><input type="checkbox" id="igOption" <?php if (!($InstagramLink ?? '') == '') {echo "checked";} ?> >Instagram</center></td>
+		<td border="1px"><center><input type="checkbox" id="fbOption" <?php if (!($FacebookLink ?? '') == '') {echo "checked";} ?> >Facebook</center></td>
 	</tr>
 	<tr>
 		<td border="1px"><center><input type="hidden" id="ig" name="ig" <?php if (!($InstagramLink ?? '') == '') {echo 'value="1"';}?> ><b>"</b>https://www.
