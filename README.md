@@ -3,7 +3,7 @@
 
 On my days of exploring, StackOverflow. I noticed myself, and other's having trouble with Multipart emails. I have worked it out and would love to share my work with other's!
 
-Feel free to remix my git repository, and customize my current code if you'd like. Please credit my my git repository.
+Feel free to remix my git repository, and customize my current code if you'd like. Please credit my git repository.
 
 ###### Features
 PHP/JS Form which creates the email
